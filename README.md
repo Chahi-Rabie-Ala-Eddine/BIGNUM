@@ -1,4 +1,4 @@
-# BIGNUM LIBRARY
+# Bignum Library
 
 **Version 1.0.0**
 
