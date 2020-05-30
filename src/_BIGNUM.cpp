@@ -28,6 +28,12 @@ int GetSize(BIG const& number)
 	return static_cast<int>(mpz_sizeinbase(number.Number, 16));
 }
 
+int GetBinarySize(BIG const& number)
+{
+
+	return static_cast<int>(mpz_sizeinbase(number.Number, 2));
+}
+
 /*Get Big number value*/
 string GetValue(BIG const& number)
 {
@@ -171,6 +177,21 @@ BIG SimpleExponentiation(BIG const& base, unsigned long int exponent)
 	return result;
 }
 
+/*Big exponentiation : mpz_t power mpz_t*/
+BIG BigExponentiation(BIG const& base, BIG const& exponent)
+{
+	BIG result = Equal(base);
+	BIG exp = Equal(exponent);
+	BIG _1 = SetValue("1");
+
+	do{
+		result = operator*(result, base);
+		Decrement(exp);
+	}while(operator>(exp, _1));
+
+	return result;
+}
+
 //								//
 //	     Modular Arithmetic 	//
 //								//
@@ -210,16 +231,25 @@ BIG ModularExponentiation(BIG const& Num, BIG const& exp, BIG const& mod)
 BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
 {
 
-	BIG _2 = SetValue("2"), _1 = SetValue("1");
+	BIG _2 = SetValue("2");
 
-	BIG size = SimpleExponentiation(mod, GetSize(mod));
-	BIG R = Equal(ModularExponentiation(_2, size, _1));
+	mpz_t temp;
+	mpz_init(temp);
+	mpz_set_str(temp, const_cast<char*>(to_string(GetBinarySize(mod)).c_str()), 10);
+
+	char* tem = NULL;
+	string value(mpz_get_str(tem, 16, temp));
+	for (auto & character: value) character = toupper(character);
+	
+	BIG size = SetValue(value);
 
 	if(IsOdd(mod))
 		throw invalid_argument("Modulo isn't odd !\n");
 
 	if(operator>(mod, size) || operator<(mod, SimpleExponentiation(mod, (GetSize(mod)-1))))
 		throw invalid_argument("Modulo's size is out of bounds !\n");
+
+	BIG R = Equal(BigExponentiation(_2, size));
 
 	BIG result;
 	mpz_init(result.Number);
