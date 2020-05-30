@@ -1,5 +1,5 @@
 #include <iostream>
-#include "GMP.h"
+#include "_BIGNUM.h"
 
 using namespace std;
 
@@ -38,6 +38,17 @@ string GetValue(BIG const& number)
     return (string)value;
 }
 
+//								//
+//	       	   Storage      	//
+//								//
+
+/*Initialise a Big number value using another one*/
+BIG Equal(BIG Number)
+{
+	BIG result = SetValue(GetValue(Number));
+
+	return result;
+}
 
 //								//
 //	     	 Comparaison   		//
@@ -153,34 +164,72 @@ BIG Square(BIG const& Num)
 /*Simple exponentiation : mpz_t power unsigned long*/
 BIG SimpleExponentiation(BIG const& base, unsigned long int exponent)
 {
-	BIG number;
-	mpz_init(number.Number);
-	mpz_pow_ui (number.Number, base.Number, exponent);
+	BIG result;
+	mpz_init(result.Number);
+	mpz_pow_ui (result.Number, base.Number, exponent);
 
-	return number;
-}
-
-BIG BigExponentiation(BIG const& base, BIG const& exponent)
-{
-	BIG number;
-	BIG result = SetValue(GetValue(base));
-	BIG temp = SetValue(GetValue(exponent));
-
-	while(mpz_cmp_ui(temp.Number, 0) != 0)
-	{
-		result = operator*(result, base);
-		Decrement(temp);
-	}
-	
 	return result;
 }
-
 
 //								//
 //	     Modular Arithmetic 	//
 //								//
 
+/*Compute module*/
+BIG Mod(BIG const& Num, BIG const& mod)
+{
+	BIG result;
+	mpz_init(result.Number);
+	mpz_mod(result.Number, Num.Number, mod.Number);
 
+	return result;
+}
+
+/*Modular multiplication*/
+BIG ModularMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
+{
+
+	return Mod(operator*(firstNum, secondNum), mod);
+}
+
+/*Modular exponentiation*/
+BIG ModularExponentiation(BIG const& Num, BIG const& exp, BIG const& mod)
+{
+	BIG result;
+	mpz_init(result.Number);
+	mpz_powm (result.Number, Num.Number, exp.Number, mod.Number);
+
+	return result;
+}
+
+//								//
+//	     	Cryptography  		//
+//								//
+
+/*Montgomery Multiplication*/
+BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
+{
+
+	BIG _2 = SetValue("2"), _1 = SetValue("1");
+
+	BIG size = SimpleExponentiation(mod, GetSize(mod));
+	BIG R = Equal(ModularExponentiation(_2, size, _1));
+
+	if(IsOdd(mod))
+		throw invalid_argument("Modulo isn't odd !\n");
+
+	if(operator>(mod, size) || operator<(mod, SimpleExponentiation(mod, (GetSize(mod)-1))))
+		throw invalid_argument("Modulo's size is out of bounds !\n");
+
+	BIG result;
+	mpz_init(result.Number);
+
+	return result;
+}
+
+/*Normal fast expnonentiation*/
+
+/*Montgomery fast exponentiation*/
 
 //								//
 //	     	  Printing  		//
