@@ -308,6 +308,22 @@ BIG NormalLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 }
 
 /*Montgomery left to right fast exponentiation using shift*/
+BIG MontgomeryLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
+{
+	BIG result = Equal(base);
+	string binaryExp = GetBinaryValue(exp);
+	unsigned int size = GetBinarySize(exp);
+
+	for(int i = 1; i < size; i++)
+	{
+		result = Equal(MontgomerySquare(result, mod));
+
+		if(binaryExp[i] == '1')
+			result = Equal(MontgomeryMultiplication(result, base, mod));
+	}
+	
+	return result;
+}
 
 //								//
 //	     	  Printing  		//
