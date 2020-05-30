@@ -16,4 +16,4 @@ Feel free to use bignum in your own projects, it would be a real pleasure to col
 
 ## License & copyright
 
-© **CHAHI Rabie Ala-Eddine**, ***Versailles Saint Quentin en Yvelines college***.
+© **[CHAHI Rabie Ala-Eddine](https://www.linkedin.com/in/ala-eddine-chahi/)** 2020.
