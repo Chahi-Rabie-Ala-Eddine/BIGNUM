@@ -1,10 +1,10 @@
 # BIGNUM LIBRARY
 
-*Version 1.0.0**
+**Version 1.0.0**
 
 ## Langage 
 
-[![GitHub top language](https://img.shields.io/github/languages/top/ChahiAladeen/BIGNUM)](https://github.com/ChahiAladeen/BIGNUM)
+[![GitHub top language](https://img.shields.io/github/languages/top/Chahi-Rabie-Ala-Eddine/BIGNUM)](https://github.com/Chahi-Rabie-Ala-Eddine/BIGNUM)
  
 ## About
 
