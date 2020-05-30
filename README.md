@@ -8,7 +8,7 @@
  
 ## About
 
-Bignum is a high-precision library for handling very large integers in cryptography. Based on the [GMP](https://gmplib.org/manual/index#Top) library, bignum is easy to use and includes most of the functions that a cryptographer needs to perform cryptosystem implementations, attacks, etc.
+Bignum is a high-precision library for handling very large integers in cryptography. Based on the [GMP](https://gmplib.org/manual/index#Top) library, bignum is easy to use and includes most of the functions that a cryptographer needs to perform cryptosystems implementations, attacks, etc.
 
 ## USE
 
