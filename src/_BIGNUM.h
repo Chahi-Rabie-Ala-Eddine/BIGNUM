@@ -1,5 +1,5 @@
-#ifndef MONTGOMERY_H
-#define MONTGOMERY_H
+#ifndef BIGNUM_H
+#define BIGNUM_H
 
 #include <gmp.h>
 
@@ -100,4 +100,4 @@ BIG MontgomeryLTRSAM(BIG const& base, BIG const& exp, BIG const& mod);
 /*Print Big number value*/
 void PrintBigNumber(BIG const& number);
 
-#endif
+#endif //BIGNUM_H
