@@ -210,6 +210,24 @@ BIG BigExponentiation(BIG const& base, BIG const& exponent)
 }
 
 //								//
+//	     Low level operations 	//
+//								//
+
+/*Right shift*/
+void LeftShift(BIG Num, unsigned long int bitsShifted)
+{
+
+	mpz_mul_2exp(Num.Number , Num.Number, bitsShifted);
+}
+
+/*Left shift*/
+void RightShift(BIG Num, unsigned long int bitsShifted)
+{
+
+	mpz_div_2exp(Num.Number , Num.Number, bitsShifted);
+}
+
+//								//
 //	     Modular Arithmetic 	//
 //								//
 
@@ -269,7 +287,7 @@ BIG NormalLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 		_base = Equal(Square(_base));
 
 		if(binaryExp[i] == '1')
-			_base = Equal(operator*(_base,base));
+			_base = Equal(operator*(_base, base));
 	}
 	
 	return Mod(_base,mod);
@@ -279,10 +297,7 @@ BIG NormalLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
 {
 	if(IsEven(mod))
-		throw invalid_argument("Modulo isn't odd !\n");
-	
-	if(operator>(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)))))) || operator<(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)-1))))))
-		throw invalid_argument("Modulo's size is out of bounds !\n");
+		throw invalid_argument("Modulo must be odd [Z/nZ SYSTEM] !\n");
 
 	BIG R = Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetDecimalSize(mod)))));
 	BIG _R = Inverse(R, mod);
@@ -290,10 +305,7 @@ BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG cons
 	BIG intermediary = operator/(operator+(MultMont, operator*(ModularMultiplication(MultMont, operator-(R, Inverse(mod, R)), R), mod)), R);
 
 	if(operator>(intermediary, mod))
-	{
-		reducNumber++;
 		return ModularMultiplication(operator-(intermediary, mod), _R, mod);
-	}
 
 	return ModularMultiplication(intermediary, _R, mod);
 }
