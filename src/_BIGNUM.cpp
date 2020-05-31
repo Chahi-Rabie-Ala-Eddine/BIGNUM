@@ -3,6 +3,8 @@
 
 using namespace std;
 
+unsigned int reducNumber = 0;
+
 //								//
 //	       Initialisation      	//
 //								//
@@ -21,17 +23,24 @@ BIG SetValue(string value)
 //	       Informations      	//
 //								//
 
-/*Get Big number size*/
+/*Get Big number hexadeciaml size*/
 unsigned int GetSize(BIG const& number)
 {
 
 	return static_cast<int>(mpz_sizeinbase(number.Number, 16));
 }
 
+/*Get Big number binary size*/
 unsigned int GetBinarySize(BIG const& number)
 {
 
 	return static_cast<int>(mpz_sizeinbase(number.Number, 2));
+}
+
+unsigned int GetDecimalSize(BIG const& number)
+{
+
+	return static_cast<int>(mpz_sizeinbase(number.Number, 10));
 }
 
 /*Get Big number value*/
@@ -149,7 +158,7 @@ BIG operator/(BIG const& firstNum, BIG const& secondNum)
 {
 	BIG result;
 	mpz_init(result.Number);
-	mpz_div (result.Number , firstNum.Number, secondNum.Number);
+	mpz_div(result.Number , firstNum.Number, secondNum.Number);
 
 	return result;
 }
@@ -248,47 +257,6 @@ BIG ModularExponentiation(BIG const& Num, BIG const& exp, BIG const& mod)
 //	     	Cryptography  		//
 //								//
 
-/*Montgomery Multiplication*/
-BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
-{
-	if(IsEven(mod))
-		throw invalid_argument("Modulo isn't odd !\n");
-
-	mpz_t temp;
-	mpz_init(temp);
-	mpz_set_str(temp, const_cast<char*>(to_string(GetBinarySize(mod)).c_str()), 10);
-	char* tem = NULL;
-	string value(mpz_get_str(tem, 16, temp));	
-	BIG R = Equal(BigExponentiation(SetValue("2"), SetValue(value)));
-
-	if(operator>(mod, R) || operator<(mod, SimpleExponentiation(mod, (GetSize(mod)-1))))
-		throw invalid_argument("Modulo's size is out of bounds !\n");
-
-	BIG _R = Inverse(R, mod);
-	BIG mod_ = Inverse(mod, R);
-	BIG firstNumberMont = ModularMultiplication(firstNum, R, mod);
-	BIG secondNumberMont = ModularMultiplication(secondNum, R, mod);
-	BIG MultMont = operator*(firstNumberMont, secondNumberMont);
-	BIG MultMont_ = ModularMultiplication(MultMont, mod_, R);
-	BIG MultMont__ = operator+(MultMont, operator*(MultMont_, mod));
-	BIG intermediary = operator/(MultMont__, R);
-
-	if(operator>(intermediary, mod))
-	{
-		printf("True\n");
-		return ModularMultiplication(operator-(MultMont__, mod), _R, mod);
-	}
-
-	return ModularMultiplication(intermediary, _R, mod);
-}
-
-/*Montgomery Square*/
-BIG MontgomerySquare(BIG const& Num, BIG const& mod)
-{
-
-	return MontgomeryMultiplication(Num, Num, mod);
-}
-
 /*Normal left to right fast expnonentiation*/
 BIG NormalLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 {
@@ -305,6 +273,47 @@ BIG NormalLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 	}
 	
 	return Mod(_base,mod);
+}
+
+/*Montgomery Multiplication*/
+BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG const& mod)
+{
+	if(IsEven(mod))
+		throw invalid_argument("Modulo isn't odd !\n");
+
+	mpz_t temp;
+	mpz_init(temp);
+	mpz_set_str(temp, const_cast<char*>(to_string(GetDecimalSize(mod)).c_str()), 16);
+	char* tem = NULL;
+	string value(mpz_get_str(tem, 16, temp));	
+	
+	if(operator>(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)))))) || operator<(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)-1))))))
+		throw invalid_argument("Modulo's size is out of bounds !\n");
+
+	BIG R = Equal(BigExponentiation(SetValue("2"), SetValue(value)));
+	BIG _R = Inverse(R, mod);
+	BIG mod_ = operator-(R, Inverse(mod, R));
+	BIG firstNumberMont = ModularMultiplication(firstNum, R, mod);
+	BIG secondNumberMont = ModularMultiplication(secondNum, R, mod);
+	BIG MultMont = operator*(firstNumberMont, secondNumberMont);
+	BIG MultMont_ = ModularMultiplication(MultMont, mod_, R);
+	BIG MultMont__ = operator+(MultMont, operator*(MultMont_, mod));
+	BIG intermediary = operator/(MultMont__, R);
+
+	if(operator>(intermediary, mod))
+	{
+		reducNumber++;
+		return ModularMultiplication(operator-(intermediary, mod), _R, mod);
+	}
+
+	return ModularMultiplication(intermediary, _R, mod);
+}
+
+/*Montgomery Square*/
+BIG MontgomerySquare(BIG const& Num, BIG const& mod)
+{
+
+	return MontgomeryMultiplication(Num, Num, mod);
 }
 
 /*Montgomery left to right fast exponentiation using shift*/
@@ -330,7 +339,7 @@ BIG MontgomeryLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 //								//
 
 /*Print Big number value*/
-void PrintBig(BIG number)
+void PrintBigNumber(BIG const& number)
 {
 
 	gmp_printf("%ZX\n",number.Number);
