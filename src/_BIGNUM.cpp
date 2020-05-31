@@ -314,7 +314,7 @@ BIG MontgomeryLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 
 	for(int i = 1; i < size; i++)
 	{
-		result = Equal(MontgomerySquare(result, result));
+		result = Equal(MontgomerySquare(result, mod));
 
 		if(binaryExp[i] == '1')
 			result = Equal(MontgomeryMultiplication(result, base, mod));
