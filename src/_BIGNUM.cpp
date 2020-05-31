@@ -280,25 +280,14 @@ BIG MontgomeryMultiplication(BIG const& firstNum, BIG const& secondNum, BIG cons
 {
 	if(IsEven(mod))
 		throw invalid_argument("Modulo isn't odd !\n");
-
-	mpz_t temp;
-	mpz_init(temp);
-	mpz_set_str(temp, const_cast<char*>(to_string(GetDecimalSize(mod)).c_str()), 16);
-	char* tem = NULL;
-	string value(mpz_get_str(tem, 16, temp));	
 	
 	if(operator>(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)))))) || operator<(mod, Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetBinarySize(mod)-1))))))
 		throw invalid_argument("Modulo's size is out of bounds !\n");
 
-	BIG R = Equal(BigExponentiation(SetValue("2"), SetValue(value)));
+	BIG R = Equal(BigExponentiation(SetValue("2"), SetValue(to_string(GetDecimalSize(mod)))));
 	BIG _R = Inverse(R, mod);
-	BIG mod_ = operator-(R, Inverse(mod, R));
-	BIG firstNumberMont = ModularMultiplication(firstNum, R, mod);
-	BIG secondNumberMont = ModularMultiplication(secondNum, R, mod);
-	BIG MultMont = operator*(firstNumberMont, secondNumberMont);
-	BIG MultMont_ = ModularMultiplication(MultMont, mod_, R);
-	BIG MultMont__ = operator+(MultMont, operator*(MultMont_, mod));
-	BIG intermediary = operator/(MultMont__, R);
+	BIG MultMont = operator*(ModularMultiplication(firstNum, R, mod), ModularMultiplication(secondNum, R, mod));
+	BIG intermediary = operator/(operator+(MultMont, operator*(ModularMultiplication(MultMont, operator-(R, Inverse(mod, R)), R), mod)), R);
 
 	if(operator>(intermediary, mod))
 	{
@@ -325,7 +314,7 @@ BIG MontgomeryLTRSAM(BIG const& base, BIG const& exp, BIG const& mod)
 
 	for(int i = 1; i < size; i++)
 	{
-		result = Equal(MontgomerySquare(result, mod));
+		result = Equal(MontgomerySquare(result, result));
 
 		if(binaryExp[i] == '1')
 			result = Equal(MontgomeryMultiplication(result, base, mod));
