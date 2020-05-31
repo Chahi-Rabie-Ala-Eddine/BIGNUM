@@ -4,7 +4,7 @@
 
 ## Langage 
 
-[![GitHub top language](https://img.shields.io/github/languages/top/Chahi-Rabie-Ala-Eddine/BIGNUM)](https://github.com/Chahi-Rabie-Ala-Eddine/BIGNUM)
+[![GitHub top language](https://img.shields.io/github/languages/top/Chahi-Rabie-Ala-Eddine/Bignum-Library)](https://github.com/Chahi-Rabie-Ala-Eddine/Bignum-Library)
  
 ## About
 
