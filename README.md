@@ -16,4 +16,4 @@ Feel free to use **bignum** in your own projects, it would be a real pleasure to
 
 ## License & copyright
 
-**© [CHAHI Rabie Ala-Eddine](https://www.linkedin.com/in/ala-eddine-chahi/) [MIT LICENSE ](https://github.com/Chahi-Rabie-Ala-Eddine/Bignum-Library/blob/master/LICENSE) - 2020**.
+**© [CHAHI Rabie Ala-Eddine](https://www.linkedin.com/in/ala-eddine-chahi/) - 2020 [MIT LICENSE](https://github.com/Chahi-Rabie-Ala-Eddine/Bignum-Library/blob/master/LICENSE)**.
